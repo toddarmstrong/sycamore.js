@@ -40,8 +40,5 @@
         "rollup-plugin-uglify": "^1.0.1",
         "rollup-watch": "^3.2.2",
         "uglify-js-harmony": "^2.7.5"
-    },
-    "directories": {
-        "test": "test"
     }
 }

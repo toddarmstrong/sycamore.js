@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="x-ua-compatible" content="IE=edge,chrome=1">
+
+    <title>sycamore.js</title>
+
+    <style media="screen">
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+        }
+        main {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%,-50%);
+            text-align: center;
+        }
+
+        main #start-button {
+            font-size: 1.25rem;
+            padding: 0.35em 1em;
+            cursor: pointer;
+        }
+    </style>
+
+</head>
+<body>
+    <main>
+        <p>Open your developer console, then hit start</p>
+        <button id="start-button">START</button>
+    </main>
+
+    <script src="../dist/sycamore.js"></script>
+    <script>
+
+        const data = [
+            {
+                id: 'animal',
+                question: 'Which animal do you like more?',
+                answers: [
+                    {
+                        text: 'Cat',
+                        nextQuestion: 'age',
+                        callback: catCallback
+                    },
+                    {
+                        text: 'Dog',
+                        nextQuestion: 'age'
+                    }
+                ]
+            },
+            {
+                id: 'age',
+                question: 'How old are you?',
+                answers: [
+                    {
+                        text: 'Under 15',
+                        nextQuestion: 'color'
+                    },
+                    {
+                        text: '15 - 30',
+                        nextQuestion: 'color'
+                    },
+                    {
+                        text: '31 - 45',
+                        nextQuestion: 'color'
+                    },
+                    {
+                        text: '46 - 60',
+                        nextQuestion: 'color'
+                    },
+                    {
+                        text: 'Over 60',
+                        nextQuestion: 'color'
+                    }
+                ]
+            },
+            {
+                id: 'color',
+                question: 'Which colour is your favourite?',
+                answers: [
+                    {
+                        text: 'red'
+                    },
+                    {
+                        text: 'blue'
+                    },
+                    {
+                        text: 'green'
+                    },
+                    {
+                        text: 'yellow'
+                    },
+                    {
+                        text: 'purple'
+                    },
+                    {
+                        text: 'orange'
+                    }
+                ]
+            }
+        ]
+
+        const options = {
+            // firstQuestion: 'age',
+            // speed: 10
+        }
+
+        const sycamore = new Sycamore(data, options)
+
+        sycamore.on('typing', (wait) => {
+            console.log(`%cTyping for ${wait}ms...`, 'color: blue')
+        })
+
+        // when the question is asked, wait 2 seconds and call the answer() method with the first answer
+        sycamore.on('question', (obj) => {
+            console.log(`%c${obj.question}`, 'color: red')
+            setTimeout(() => {
+                console.log(`%c${obj.answers[0].text}`, 'color: green')
+                sycamore.answer(obj.answers[0])
+            }, 2000)
+        })
+
+        sycamore.on('update', (data) => {
+            console.log('%cUpdated collected data:', 'color: lightcoral')
+            console.log(data)
+        })
+
+        sycamore.on('finished', (data) => {
+            console.log('%cLast question answered', 'color: orange')
+            console.log('%cFinal collected data:', 'color: orange')
+            console.log(data)
+        })
+
+        document.querySelector('#start-button').addEventListener('click', () => {
+            sycamore.init()
+        })
+
+        function catCallback() {
+            console.log(`%cThis is a callback from answer 'Cat'`, 'color: purple')
+        }
+
+    </script>
+
+</body>
+</html>
