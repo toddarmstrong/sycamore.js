@@ -33,6 +33,7 @@
         "babel-register": "^6.24.1",
         "babelrc-rollup": "^3.0.0",
         "eslint": "^3.19.0",
+        "knot.js": "^1.1.5",
         "rollup": "^0.41.6",
         "rollup-plugin-babel": "^2.7.1",
         "rollup-plugin-node-resolve": "^3.0.0",
