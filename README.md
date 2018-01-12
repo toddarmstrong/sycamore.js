@@ -86,6 +86,11 @@ sycamore.on('question', (obj) => {
 	// iterate over and display each obj.answers.text
 })
 
+// sycamore emits the 'answered' event when the answer() method is called
+sycamore.on('answered', (qa) => {
+	//qa obj contains the question and answer
+})
+
 // after each question is answered, sycamore will emit an updated event with the current collected data
 sycamore.on('update', (data) => {
 
@@ -109,6 +114,7 @@ sycamore.answer(answer)
 | Option | Type | Default | Description |
 | --- | --- | --- | --- |
 | speed | int | 5 | A value between 1 - 10. 5 is an average typing speed. If number is below 1 or above 10 then it will be ignored and default will be used.
+| delay | int | 0 | A millisecond value greater or equal to 0, which specifies the delay time after the answer() method is called before the next question is asked
 | firstQuestion | string | | Supply a question ID string to determine that is the first question
 
 ```javascript

@@ -200,8 +200,8 @@
         ]
 
         const options = {
-            // firstQuestion: 'age',
-            // speed: 10
+            speed: 6,
+            delay: 1750
         }
 
         const typing = document.querySelector('.typing')
@@ -248,6 +248,11 @@
             })
         })
 
+        sycamore.on('answered', (qa) => {
+            console.log('%cAnswer collected:', 'color: turquoise')
+            console.log(qa)
+        })
+
         sycamore.on('update', (data) => {
             console.log('%cUpdated collected data:', 'color: lightcoral')
             console.log(data)
@@ -255,7 +260,7 @@
 
         sycamore.on('finished', (data) => {
             console.log('%cLast question answered', 'color: orange')
-            console.log('%cFinal collected data:', 'color: orange')
+            console.log('%cFinal collected data:', 'color: magenta')
             console.log(data)
         })
 

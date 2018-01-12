@@ -10,14 +10,22 @@ export default class Sycamore {
         this.emitter = knot()
 
         let speed
-        if (options.speed && options.speed >= 1 && options.speed <= 10) {
+        if (options.speed && typeof options.speed === 'number' && options.speed >= 1 && options.speed <= 10) {
             speed = options.speed
         } else {
             speed = 5
         }
 
+        let delay
+        if (options.delay && typeof options.delay === 'number' && options.delay >= 0) {
+            delay = options.delay
+        } else {
+            delay = 0
+        }
+
         this.options = {
             speed: speed,
+            delay: delay,
             firstQuestion: options.firstQuestion || false
         }
 
@@ -105,12 +113,16 @@ export default class Sycamore {
             answer: answer.text
         }
 
+        this.emitter.emit('answered', answeredQuestionData)
+
         this.answeredData.push(answeredQuestionData)
 
         this.emitter.emit('update', this.answeredData)
 
         if (answer.nextQuestion) {
-            this._findAndAsk(answer.nextQuestion)
+            setTimeout(() => {
+                this._findAndAsk(answer.nextQuestion)
+            }, this.options.delay)
         } else {
             this.emitter.emit('finished', this.answeredData)
         }
