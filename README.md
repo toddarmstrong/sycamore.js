@@ -120,6 +120,7 @@ sycamore.answer(answer)
 ```javascript
 const options = {
 	speed: 5, // Determine the speed of the typing, from 1 - 10
+	delay: 1000, // Delay after question is answered before next is asked, millisecond >= 0
 	firstQuestion: 'age' // The first question can be set in the options or passed as the first parameter to the init method
 }
 
