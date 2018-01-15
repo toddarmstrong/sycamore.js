@@ -23,9 +23,17 @@ export default class Sycamore {
             delay = 0
         }
 
+        let delayMinMax
+        if (options.delayMinMax && Array.isArray(options.delayMinMax) && options.delayMinMax.length === 2 && options.delayMinMax[0] > 0 && options.delayMinMax[1] > 0 && options.delayMinMax[0] < options.delayMinMax[1]) {
+            delayMinMax = options.delayMinMax
+        } else {
+            delayMinMax = false
+        }
+
         this.options = {
             speed: speed,
             delay: delay,
+            delayMinMax: delayMinMax,
             firstQuestion: options.firstQuestion || false
         }
 
@@ -107,6 +115,14 @@ export default class Sycamore {
         })
     }
 
+    _calculateDelay () {
+        if (this.options.delayMinMax) {
+            return Math.floor(Math.random() * (this.options.delayMinMax[1] - this.options.delayMinMax[0] + 1) + this.options.delayMinMax[0])
+        } else {
+            return this.options.delay
+        }
+    }
+
     _answerQuestion (answer) {
         const answeredQuestionData = {
             question: this.currentQuestion.question,
@@ -119,20 +135,24 @@ export default class Sycamore {
 
         this.emitter.emit('update', this.answeredData)
 
-        if (answer.nextQuestion) {
-            setTimeout(() => {
-                this._findAndAsk(answer.nextQuestion)
-            }, this.options.delay)
-        } else {
-            this.emitter.emit('finished', this.answeredData)
-        }
-        
         if (answer.callback) {
             if (typeof answer.callback == 'function') {
                 answer.callback()
             } else {
                 throw new Error(`The callback for '${answer.text}' is not a function`)
             }
+        }
+
+        if (answer.nextQuestion) {
+            const delay = this._calculateDelay()
+
+            this.emitter.emit('delay', delay)
+
+            setTimeout(() => {
+                this._findAndAsk(answer.nextQuestion)
+            }, delay)
+        } else {
+            this.emitter.emit('finished', this.answeredData)
         }
     }
 }

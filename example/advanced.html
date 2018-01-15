@@ -201,7 +201,7 @@
 
         const options = {
             speed: 6,
-            delay: 1750
+            delayMinMax: [1500, 3000]
         }
 
         const typing = document.querySelector('.typing')
@@ -253,6 +253,10 @@
             console.log(qa)
         })
 
+        sycamore.on('delay', (delay) => {
+            console.log(`%cDelaying for ${delay}ms before asking next question...`, 'color: purple')
+        })
+
         sycamore.on('update', (data) => {
             console.log('%cUpdated collected data:', 'color: lightcoral')
             console.log(data)
@@ -270,7 +274,7 @@
         })
 
         function catCallback() {
-            console.log(`%cThis is a callback from answer 'Cat'`, 'color: purple')
+            console.log(`%cThis is a callback from answer 'Cat'`, 'color: olivedrab')
         }
 
     </script>
