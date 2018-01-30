@@ -134,47 +134,50 @@
         const data = [
             {
                 id: 'animal',
+                type: 'question',
                 question: 'Which animal do you like more?',
                 answers: [
                     {
                         text: 'Cat',
-                        nextQuestion: 'age',
+                        next: 'age',
                         callback: catCallback
                     },
                     {
                         text: 'Dog',
-                        nextQuestion: 'age'
+                        next: 'age'
                     }
                 ]
             },
             {
                 id: 'age',
+                type: 'question',
                 question: 'How old are you?',
                 answers: [
                     {
                         text: 'Under 15',
-                        nextQuestion: 'color'
+                        next: 'color'
                     },
                     {
                         text: '15 - 30',
-                        nextQuestion: 'color'
+                        next: 'color'
                     },
                     {
                         text: '31 - 45',
-                        nextQuestion: 'color'
+                        next: 'color'
                     },
                     {
                         text: '46 - 60',
-                        nextQuestion: 'color'
+                        next: 'color'
                     },
                     {
                         text: 'Over 60',
-                        nextQuestion: 'color'
+                        next: 'color'
                     }
                 ]
             },
             {
                 id: 'color',
+                type: 'question',
                 question: 'Which colour is your favourite?',
                 answers: [
                     {

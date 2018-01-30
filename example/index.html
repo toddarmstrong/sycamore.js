@@ -39,48 +39,69 @@
 
         const data = [
             {
+                id: 'intro',
+                type: 'message',
+                text: 'Hey!',
+                next: 'compliment'
+            },
+            {
+                id: 'fact',
+                type: 'message',
+                text: 'I am not a robot, I am a real human.',
+                next: 'color'
+            },
+            {
+                id: 'compliment',
+                type: 'message',
+                text: 'You look great today!',
+                next: 'animal'
+            },
+            {
                 id: 'animal',
+                type: 'question',
                 question: 'Which animal do you like more?',
                 answers: [
                     {
                         text: 'Cat',
-                        nextQuestion: 'age',
+                        next: 'age',
                         callback: catCallback
                     },
                     {
                         text: 'Dog',
-                        nextQuestion: 'age'
+                        next: 'age'
                     }
                 ]
             },
             {
                 id: 'age',
+                type: 'question',
                 question: 'How old are you?',
                 answers: [
                     {
                         text: 'Under 15',
-                        nextQuestion: 'color'
+                        next: 'fact'
                     },
                     {
                         text: '15 - 30',
-                        nextQuestion: 'color'
+                        next: 'fact'
                     },
                     {
                         text: '31 - 45',
-                        nextQuestion: 'color'
+                        next: 'fact'
                     },
                     {
                         text: '46 - 60',
-                        nextQuestion: 'color'
+                        next: 'fact'
                     },
                     {
                         text: 'Over 60',
-                        nextQuestion: 'color'
+                        next: 'fact'
                     }
                 ]
             },
             {
                 id: 'color',
+                type: 'question',
                 question: 'Which colour is your favourite?',
                 answers: [
                     {
@@ -107,13 +128,17 @@
 
         const options = {
             speed: 7,
-            delay: 1750
+            delayMinMax: [1500, 2500]
         }
 
         const sycamore = new Sycamore(data, options)
 
         sycamore.on('typing', (wait) => {
             console.log(`%cTyping for ${wait}ms...`, 'color: blue')
+        })
+
+        sycamore.on('message', (obj) => {
+            console.log(`%c${obj.text}`, 'color: red')
         })
 
         // when the question is asked, wait 2 seconds and call the answer() method with the first answer
@@ -131,7 +156,7 @@
         })
 
         sycamore.on('delay', (delay) => {
-            console.log(`%cDelaying for ${delay}ms before asking next question...`, 'color: purple')
+            console.log(`%cDelaying for ${delay}ms before next message...`, 'color: purple')
         })
 
         sycamore.on('update', (data) => {

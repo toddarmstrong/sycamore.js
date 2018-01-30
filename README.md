@@ -15,39 +15,88 @@ import data from './data.json'
 // create the data array
 const data = [
 	{
+		id: 'intro',
+		type: 'message',
+		text: 'Hey!',
+		next: 'compliment'
+	},
+	{
+		id: 'fact',
+		type: 'message',
+		text: 'I am not a robot, I am a real human.',
+		next: 'color'
+	},
+	{
+		id: 'compliment',
+		type: 'message',
+		text: 'You look great today!',
+		next: 'animal',
+	},
+	{
 		id: 'animal',
+		type: 'question',
 		question: 'Which animal do you like more?',
 		answers: [
 			{
 				text: 'Cat',
-				nextQuestion: 'age', // set the next question to be asked by id, if this answer is selected 
-				callback: someFunction // set a callback function if this answer is selected 
+				next: 'age',
+				callback: catCallback
 			},
 			{
 				text: 'Dog',
-				nextQuestion: 'age'
+				next: 'age'
 			}
 		]
 	},
 	{
 		id: 'age',
+		type: 'question',
 		question: 'How old are you?',
-		// if an answer object doesn't contain the nextQuestion key, it will be an end point of the tree
 		answers: [
 			{
-				text: 'Under 15'
+				text: 'Under 15',
+				next: 'color'
 			},
 			{
-				text: '15 - 30'
+				text: '15 - 30',
+				next: 'color'
 			},
 			{
-				text: '31 - 45'
+				text: '31 - 45',
+				next: 'color'
 			},
 			{
-				text: '46 - 60'
+				text: '46 - 60',
+				next: 'color'
 			},
 			{
-				text: 'Over 60'
+				text: 'Over 60',
+				next: 'color'
+			}
+		]
+	},
+	{
+		id: 'color',
+		type: 'question',
+		question: 'Which colour is your favourite?',
+		answers: [
+			{
+				text: 'red'
+			},
+			{
+				text: 'blue'
+			},
+			{
+				text: 'green'
+			},
+			{
+				text: 'yellow'
+			},
+			{
+				text: 'purple'
+			},
+			{
+				text: 'orange'
 			}
 		]
 	}
@@ -79,11 +128,21 @@ sycamore.on('typing', (wait) => {
 	// start a 'typing' animation for example
 })
 
+// sycamore emits a message to the user
+sycamore.on('message', (obj) => {
+
+})
+
 // sycamore emits a question and will wait for the answer() method to be called in response
 sycamore.on('question', (obj) => {
 	// stop the 'typing' animation
 	// do something with obj.question to display the question
 	// iterate over and display each obj.answers.text
+})
+
+// when there is a delay between questions/messages this will fire
+sycamore.on('delay', (delay) => {
+
 })
 
 // sycamore emits the 'answered' event when the answer() method is called

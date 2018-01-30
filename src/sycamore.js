@@ -58,11 +58,11 @@ export default class Sycamore {
 
     init (id) {
         if (id) {
-            this._findAndAsk(id)
+            this._findAndProcessDataObj(id)
         } else if (this.options.firstQuestion) {
-            this._findAndAsk(this.options.firstQuestion)
+            this._findAndProcessDataObj(this.options.firstQuestion)
         } else {
-            this._askQuestion(this.data[0])
+            this._processDataObj(this.data[0])
         }
     }
 
@@ -77,17 +77,6 @@ export default class Sycamore {
         --- CORE FUNCTIONS ---
     **/
 
-    _findQuestionByID (id) {
-        return new Promise((resolve, reject) => {
-            this.data.forEach((obj) => {
-                if (obj.id === id) {
-                    resolve(obj)
-                }
-            })
-            reject('No question found')
-        })
-    }
-
     _calculateWait (question) {
         const characterLength = question.length
         let wait = characterLength / this.charactersPerSecond
@@ -96,31 +85,69 @@ export default class Sycamore {
         return wait
     }
 
-    _askQuestion (obj) {
-        this.currentQuestion = obj
-        const wait = this._calculateWait(obj.question)
-
-        this.emitter.emit('typing', wait)
-
-        setTimeout(() => {
-            this.emitter.emit('question', obj)
-        }, wait)
-    }
-
-    _findAndAsk (id) {
-        this._findQuestionByID(id).then((obj) => {
-            this._askQuestion(obj)
-        }).catch((error) => {
-            throw new Error(error)
-        })
-    }
-
     _calculateDelay () {
         if (this.options.delayMinMax) {
             return Math.floor(Math.random() * (this.options.delayMinMax[1] - this.options.delayMinMax[0] + 1) + this.options.delayMinMax[0])
         } else {
             return this.options.delay
         }
+    }
+
+    _findDataObjByID (id) {
+        return new Promise((resolve, reject) => {
+            this.data.forEach((obj) => {
+                if (obj.id === id) {
+                    resolve(obj)
+                }
+            })
+            reject('No message object found')
+        })
+    }
+
+    _processDataObj (dataObj) {
+        if (dataObj.type === 'message') {
+            this._sendMessage(dataObj)
+        } else if (dataObj.type === 'question') {
+            this._askQuestion(dataObj)
+        } else {
+            throw new Error(`Data object doesn't have a valid type.`)
+        }
+    }
+
+    _findAndProcessDataObj (id) {
+        this._findDataObjByID(id).then((obj) => {
+            this._processDataObj(obj)
+        }).catch((error) => {
+            throw new Error(error)
+        })
+    }
+
+    _sendMessage (dataObj) {
+        const wait = this._calculateWait(dataObj.text)
+
+        this.emitter.emit('typing', wait)
+
+        setTimeout(() => {
+            this.emitter.emit('message', dataObj)
+
+            const delay = this._calculateDelay()
+            this.emitter.emit('delay', delay)
+                
+            setTimeout(() => {
+                this._findAndProcessDataObj(dataObj.next)
+            }, delay)
+        }, wait)
+    }
+
+    _askQuestion (dataObj) {
+        this.currentQuestion = dataObj
+        const wait = this._calculateWait(dataObj.question)
+
+        this.emitter.emit('typing', wait)
+
+        setTimeout(() => {
+            this.emitter.emit('question', dataObj)
+        }, wait)
     }
 
     _answerQuestion (answer) {
@@ -143,13 +170,12 @@ export default class Sycamore {
             }
         }
 
-        if (answer.nextQuestion) {
+        if (answer.next) {
             const delay = this._calculateDelay()
-
             this.emitter.emit('delay', delay)
 
             setTimeout(() => {
-                this._findAndAsk(answer.nextQuestion)
+                this._findAndProcessDataObj(answer.next)
             }, delay)
         } else {
             this.emitter.emit('finished', this.answeredData)
