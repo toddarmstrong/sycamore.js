@@ -55,23 +55,23 @@ const data = [
 		answers: [
 			{
 				text: 'Under 15',
-				next: 'color'
+				next: 'fact'
 			},
 			{
 				text: '15 - 30',
-				next: 'color'
+				next: 'fact'
 			},
 			{
 				text: '31 - 45',
-				next: 'color'
+				next: 'fact'
 			},
 			{
 				text: '46 - 60',
-				next: 'color'
+				next: 'fact'
 			},
 			{
 				text: 'Over 60',
-				next: 'color'
+				next: 'fact'
 			}
 		]
 	},
