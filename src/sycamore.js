@@ -162,14 +162,6 @@ export default class Sycamore {
 
         this.emitter.emit('update', this.answeredData)
 
-        if (answer.callback) {
-            if (typeof answer.callback == 'function') {
-                answer.callback()
-            } else {
-                throw new Error(`The callback for '${answer.text}' is not a function`)
-            }
-        }
-
         if (answer.next) {
             const delay = this._calculateDelay()
             this.emitter.emit('delay', delay)

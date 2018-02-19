@@ -39,8 +39,7 @@ const data = [
 		answers: [
 			{
 				text: 'Cat',
-				next: 'age',
-				callback: catCallback
+				next: 'age'
 			},
 			{
 				text: 'Dog',
@@ -101,10 +100,6 @@ const data = [
 		]
 	}
 ]
-
-const someFunction = () => {
-	// this is the callback function for the answer 'Cat'
-}
 
 // create instance of sycamore with data
 const sycamore = new Sycamore(data)

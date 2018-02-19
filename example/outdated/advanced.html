@@ -139,8 +139,7 @@
                 answers: [
                     {
                         text: 'Cat',
-                        next: 'age',
-                        callback: catCallback
+                        next: 'age'
                     },
                     {
                         text: 'Dog',
@@ -275,10 +274,6 @@
             sycamore.init()
             startBtn.classList.add('hidden')
         })
-
-        function catCallback() {
-            console.log(`%cThis is a callback from answer 'Cat'`, 'color: olivedrab')
-        }
 
     </script>
 

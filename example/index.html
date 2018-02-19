@@ -63,8 +63,7 @@
                 answers: [
                     {
                         text: 'Cat',
-                        next: 'age',
-                        callback: catCallback
+                        next: 'age'
                     },
                     {
                         text: 'Dog',
@@ -173,10 +172,6 @@
         document.querySelector('#start-button').addEventListener('click', () => {
             sycamore.init()
         })
-
-        function catCallback() {
-            console.log(`%cThis is a callback from answer 'Cat'`, 'color: olivedrab')
-        }
 
     </script>
 
