@@ -10,7 +10,7 @@ export default class Sycamore {
         this.emitter = knot()
 
         let speed
-        if (options.speed && typeof options.speed === 'number' && options.speed >= 1 && options.speed <= 10) {
+        if (options.speed && typeof options.speed === 'number' && options.speed >= 1) {
             speed = options.speed
         } else {
             speed = 5
