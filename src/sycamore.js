@@ -30,17 +30,34 @@ export default class Sycamore {
             delayMinMax = false
         }
 
+        let firstMessage
+        if (options.firstMessage && typeof options.firstMessage === 'string') {
+            firstMessage = options.firstMessage
+        } else {
+            firstMessage = false
+        }
+
+        let autoNext
+        if (options.autoNext !== null && typeof options.autoNext === 'boolean') {
+            autoNext = options.autoNext
+        } else {
+            autoNext = true
+        }
+
         this.options = {
             speed: speed,
             delay: delay,
             delayMinMax: delayMinMax,
-            firstMessage: options.firstMessage || false
+            firstMessage: firstMessage,
+            autoNext: autoNext
         }
 
         const averageCharactersPerSecond = 6
         this.charactersPerSecond = (averageCharactersPerSecond * 2) * (this.options.speed / 10)
 
         this.currentQuestion = false
+        this.nextMessage = false
+        this.conversationFinished = false
         this.answeredData = []
 
         if (data instanceof Array) {
@@ -68,6 +85,25 @@ export default class Sycamore {
 
     answer (answer) {
         this._answerQuestion(answer)
+    }
+
+    next (id) {
+        if (this.conversationFinished) {
+            throw new Error(`Conversation has finished.`)
+        } else {
+            if (options.autoNext) {
+                throw new Error(`autoNext option is set to true.`)
+            } else if (!this.nextMessage) {
+                throw new Error(`There is no next message object.`)
+            } else {
+                if (id && typeof id === 'string') {
+                    this._findAndProcessDataObj(id)
+                } else {
+                    this._findAndProcessDataObj(this.nextMessage)
+                }
+            }
+        }
+        
     }
 
     on (...args) { return this.emitter.on(...args) }
@@ -133,14 +169,19 @@ export default class Sycamore {
             this.emitter.emit('message', dataObj)
 
             if (dataObj.next && typeof dataObj.next === 'string') {
-                const delay = this._calculateDelay()
-                this.emitter.emit('delay', delay)
+                if (this.options.autoNext) {
+                    const delay = this._calculateDelay()
+                    this.emitter.emit('delay', delay)
 
-                setTimeout(() => {
-                    this._findAndProcessDataObj(dataObj.next)
-                }, delay)
+                    setTimeout(() => {
+                        this._findAndProcessDataObj(dataObj.next)
+                    }, delay)
+                } else {
+                    this.nextMessage = dataObj.next
+                }
             } else {
                 this.emitter.emit('finished', this.answeredData)
+                this.conversationFinished = true
             }
         }, wait)
     }
@@ -169,14 +210,19 @@ export default class Sycamore {
         this.emitter.emit('update', this.answeredData)
 
         if (answer.next && typeof answer.next === 'string') {
-            const delay = this._calculateDelay()
-            this.emitter.emit('delay', delay)
+            if (this.options.autoNext) {
+                const delay = this._calculateDelay()
+                this.emitter.emit('delay', delay)
 
-            setTimeout(() => {
-                this._findAndProcessDataObj(answer.next)
-            }, delay)
+                setTimeout(() => {
+                    this._findAndProcessDataObj(answer.next)
+                }, delay)
+            } else {
+                this.nextMessage = answer.next
+            }
         } else {
             this.emitter.emit('finished', this.answeredData)
+            this.conversationFinished = true
         }
     }
 }

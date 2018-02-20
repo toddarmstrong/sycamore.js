@@ -155,6 +155,10 @@ sycamore.on('finished', (data) => {
 ```javascript
 // send back the answer to the previous asked question
 sycamore.answer(answer)
+
+// go to next message if the autoNext option is set to false
+// if a message id is passed as a parameter, it will skip to that message next
+sycamore.next(id)
 ```
 
 ## Options
@@ -165,13 +169,15 @@ sycamore.answer(answer)
 | delay | int | 0 | A millisecond value greater or equal to 0, which specifies the delay time after the answer() method is called before the next question is asked
 | delayMinMax | array | | An array of 2 numbers only to determine the range of randomised delay after each answer() (ex. [1500, 3000])
 | firstMessage | string | | Supply a question ID string to determine that is the first question
+| autoNext | boolean | true | Set whether the next message or question will be automatically sent
 
 ```javascript
 const options = {
 	speed: 5, // Determine the speed of the typing
 	delay: 1000, // Delay after question is answered before next is asked, millisecond >= 0
 	delayMinMax: [1500, 3000], // Array containing only 2 numbers, first index must be lower than second
-	firstMessage: 'age' // The first question can be set in the options or passed as the first parameter to the init method
+	firstMessage: 'age', // The first question can be set in the options or passed as the first parameter to the init method
+	autoNext: false // Sycamore will wait for the next() method to be called before advancing
 }
 
 const sycamore = new Sycamore(data, options)
