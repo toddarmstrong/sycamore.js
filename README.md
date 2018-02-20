@@ -16,25 +16,21 @@ import data from './data.json'
 const data = [
 	{
 		id: 'intro',
-		type: 'message',
 		text: 'Hey!',
 		next: 'compliment'
 	},
 	{
 		id: 'fact',
-		type: 'message',
 		text: 'I am not a robot, I am a real human.',
 		next: 'color'
 	},
 	{
 		id: 'compliment',
-		type: 'message',
 		text: 'You look great today!',
 		next: 'animal',
 	},
 	{
 		id: 'animal',
-		type: 'question',
 		question: 'Which animal do you like more?',
 		answers: [
 			{
@@ -49,7 +45,6 @@ const data = [
 	},
 	{
 		id: 'age',
-		type: 'question',
 		question: 'How old are you?',
 		answers: [
 			{
@@ -76,7 +71,6 @@ const data = [
 	},
 	{
 		id: 'color',
-		type: 'question',
 		question: 'Which colour is your favourite?',
 		answers: [
 			{
@@ -170,14 +164,14 @@ sycamore.answer(answer)
 | speed | int | 5 | A value between 1 - 10. 5 is an average typing speed. If number is below 1 or above 10 then it will be ignored and default will be used.
 | delay | int | 0 | A millisecond value greater or equal to 0, which specifies the delay time after the answer() method is called before the next question is asked
 | delayMinMax | array | | An array of 2 numbers only to determine the range of randomised delay after each answer() (ex. [1500, 3000])
-| firstQuestion | string | | Supply a question ID string to determine that is the first question
+| firstMessage | string | | Supply a question ID string to determine that is the first question
 
 ```javascript
 const options = {
 	speed: 5, // Determine the speed of the typing, from 1 - 10
 	delay: 1000, // Delay after question is answered before next is asked, millisecond >= 0
 	delayMinMax: [1500, 3000], // Array containing only 2 numbers, first index must be lower than second
-	firstQuestion: 'age' // The first question can be set in the options or passed as the first parameter to the init method
+	firstMessage: 'age' // The first question can be set in the options or passed as the first parameter to the init method
 }
 
 const sycamore = new Sycamore(data, options)

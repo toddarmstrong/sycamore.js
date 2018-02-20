@@ -34,7 +34,7 @@ export default class Sycamore {
             speed: speed,
             delay: delay,
             delayMinMax: delayMinMax,
-            firstQuestion: options.firstQuestion || false
+            firstMessage: options.firstMessage || false
         }
 
         const averageCharactersPerSecond = 6
@@ -59,8 +59,8 @@ export default class Sycamore {
     init (id) {
         if (id) {
             this._findAndProcessDataObj(id)
-        } else if (this.options.firstQuestion) {
-            this._findAndProcessDataObj(this.options.firstQuestion)
+        } else if (this.options.firstMessage) {
+            this._findAndProcessDataObj(this.options.firstMessage)
         } else {
             this._processDataObj(this.data[0])
         }
@@ -105,12 +105,14 @@ export default class Sycamore {
     }
 
     _processDataObj (dataObj) {
-        if (dataObj.type === 'message') {
+        if (dataObj.text && dataObj.question) {
+            throw new Error(`Message object can't have both text and question key.`)
+        } else if (dataObj.text && typeof dataObj.text === 'string') {
             this._sendMessage(dataObj)
-        } else if (dataObj.type === 'question') {
+        } else if (dataObj.question && typeof dataObj.question === 'string') {
             this._askQuestion(dataObj)
         } else {
-            throw new Error(`Data object doesn't have a valid type.`)
+            throw new Error(`Data object doesn't contain text or question key.`)
         }
     }
 
@@ -130,12 +132,16 @@ export default class Sycamore {
         setTimeout(() => {
             this.emitter.emit('message', dataObj)
 
-            const delay = this._calculateDelay()
-            this.emitter.emit('delay', delay)
-                
-            setTimeout(() => {
-                this._findAndProcessDataObj(dataObj.next)
-            }, delay)
+            if (dataObj.next && typeof dataObj.next === 'string') {
+                const delay = this._calculateDelay()
+                this.emitter.emit('delay', delay)
+
+                setTimeout(() => {
+                    this._findAndProcessDataObj(dataObj.next)
+                }, delay)
+            } else {
+                this.emitter.emit('finished', this.answeredData)
+            }
         }, wait)
     }
 
@@ -162,7 +168,7 @@ export default class Sycamore {
 
         this.emitter.emit('update', this.answeredData)
 
-        if (answer.next) {
+        if (answer.next && typeof answer.next === 'string') {
             const delay = this._calculateDelay()
             this.emitter.emit('delay', delay)
 

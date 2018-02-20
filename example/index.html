@@ -40,25 +40,21 @@
         const data = [
             {
                 id: 'intro',
-                type: 'message',
                 text: 'Hey!',
                 next: 'compliment'
             },
             {
                 id: 'fact',
-                type: 'message',
                 text: 'I am not a robot, I am a real human.',
                 next: 'color'
             },
             {
                 id: 'compliment',
-                type: 'message',
                 text: 'You look great today!',
                 next: 'animal'
             },
             {
                 id: 'animal',
-                type: 'question',
                 question: 'Which animal do you like more?',
                 answers: [
                     {
@@ -73,7 +69,6 @@
             },
             {
                 id: 'age',
-                type: 'question',
                 question: 'How old are you?',
                 answers: [
                     {
@@ -100,7 +95,6 @@
             },
             {
                 id: 'color',
-                type: 'question',
                 question: 'Which colour is your favourite?',
                 answers: [
                     {
@@ -164,7 +158,7 @@
         })
 
         sycamore.on('finished', (data) => {
-            console.log('%cLast question answered', 'color: orange')
+            console.log('%cEnd of conversation', 'color: orange')
             console.log('%cFinal collected data:', 'color: magenta')
             console.log(data)
         })
