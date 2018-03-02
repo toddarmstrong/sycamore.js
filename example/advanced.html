@@ -133,8 +133,22 @@
 
         const data = [
             {
+                id: 'intro',
+                text: 'Hey!',
+                next: 'compliment'
+            },
+            {
+                id: 'fact',
+                text: 'I am not a robot, I am a real human.',
+                next: 'color'
+            },
+            {
+                id: 'compliment',
+                text: 'You look great today!',
+                next: 'animal'
+            },
+            {
                 id: 'animal',
-                type: 'question',
                 question: 'Which animal do you like more?',
                 answers: [
                     {
@@ -149,34 +163,32 @@
             },
             {
                 id: 'age',
-                type: 'question',
                 question: 'How old are you?',
                 answers: [
                     {
                         text: 'Under 15',
-                        next: 'color'
+                        next: 'fact'
                     },
                     {
                         text: '15 - 30',
-                        next: 'color'
+                        next: 'fact'
                     },
                     {
                         text: '31 - 45',
-                        next: 'color'
+                        next: 'fact'
                     },
                     {
                         text: '46 - 60',
-                        next: 'color'
+                        next: 'fact'
                     },
                     {
                         text: 'Over 60',
-                        next: 'color'
+                        next: 'fact'
                     }
                 ]
             },
             {
                 id: 'color',
-                type: 'question',
                 question: 'Which colour is your favourite?',
                 answers: [
                     {
@@ -216,6 +228,15 @@
         sycamore.on('typing', (wait) => {
             console.log(`%cTyping for ${wait}ms...`, 'color: blue')
             typing.classList.add('active')
+            botText.classList.remove('active')
+        })
+
+        sycamore.on('message', (obj) => {
+            console.log(`%c${obj.text}`, 'color: red')
+            typing.classList.remove('active')
+
+            botText.innerHTML = obj.text
+            botText.classList.add('active')
         })
 
         // when the question is asked, wait 2 seconds and call the answer() method with the first answer
