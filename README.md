@@ -17,16 +17,20 @@ const data = [
 	{
 		id: 'intro',
 		text: 'Hey!',
+		next: 'name'
+	},
+	{
+		id: 'name',
+		question: 'What is your name?',
+		input: {
+			variable: 'name',
+			label: 'Enter your name'
+		},
 		next: 'compliment'
 	},
 	{
-		id: 'fact',
-		text: 'I am not a robot, I am a real human.',
-		next: 'color'
-	},
-	{
 		id: 'compliment',
-		text: 'You look great today!',
+		text: 'You look great today, ${name}!',
 		next: 'animal',
 	},
 	{
@@ -45,27 +49,27 @@ const data = [
 	},
 	{
 		id: 'age',
-		question: 'How old are you?',
+		question: 'So ${name}, how old are you?',
 		answers: [
 			{
 				text: 'Under 15',
-				next: 'fact'
+				next: 'color'
 			},
 			{
 				text: '15 - 30',
-				next: 'fact'
+				next: 'color'
 			},
 			{
 				text: '31 - 45',
-				next: 'fact'
+				next: 'color'
 			},
 			{
 				text: '46 - 60',
-				next: 'fact'
+				next: 'color'
 			},
 			{
 				text: 'Over 60',
-				next: 'fact'
+				next: 'color'
 			}
 		]
 	},
@@ -105,6 +109,32 @@ sycamore.init()
 
 // initiate and start with a specific question by it's ID
 sycamore.init('age')
+```
+
+## Variables
+
+Variables can be set when an input object is added to a question and a variable key is set within
+
+```javascript
+{
+	id: 'name',
+	question: 'What is your name?',
+	input: {
+		variable: 'name',
+		label: 'Enter your name'
+	},
+	next: 'compliment'
+}
+```
+
+You are able to reference these variables using the following syntax
+
+```javascript
+{
+	id: 'compliment',
+	text: 'You look great today, ${name}!',
+	next: 'animal',
+}
 ```
 
 ## Events

@@ -59,6 +59,7 @@ export default class Sycamore {
         this.nextMessage = false
         this.conversationFinished = false
         this.answeredData = []
+        this.variables = {}
 
         if (data instanceof Array) {
             this.data = data
@@ -166,7 +167,7 @@ export default class Sycamore {
         this.emitter.emit('typing', wait)
 
         setTimeout(() => {
-            this.emitter.emit('message', dataObj)
+            this.emitter.emit('message', this._parseDataObj(dataObj))
 
             if (dataObj.next && typeof dataObj.next === 'string') {
                 if (this.options.autoNext) {
@@ -180,7 +181,7 @@ export default class Sycamore {
                     this.nextMessage = dataObj.next
                 }
             } else {
-                this.emitter.emit('finished', this.answeredData)
+                this._finalData()
                 this.conversationFinished = true
             }
         }, wait)
@@ -193,14 +194,14 @@ export default class Sycamore {
         this.emitter.emit('typing', wait)
 
         setTimeout(() => {
-            this.emitter.emit('question', dataObj)
+            this.emitter.emit('question', this._parseDataObj(dataObj))
         }, wait)
     }
 
-    _answerQuestion (answer) {
+    _answerQuestion (answerString) {
         const answeredQuestionData = {
             question: this.currentQuestion.question,
-            answer: answer.text
+            answer: answerString
         }
 
         this.emitter.emit('answered', answeredQuestionData)
@@ -209,20 +210,70 @@ export default class Sycamore {
 
         this.emitter.emit('update', this.answeredData)
 
-        if (answer.next && typeof answer.next === 'string') {
-            if (this.options.autoNext) {
-                const delay = this._calculateDelay()
-                this.emitter.emit('delay', delay)
-
-                setTimeout(() => {
-                    this._findAndProcessDataObj(answer.next)
-                }, delay)
-            } else {
-                this.nextMessage = answer.next
+        if (this.currentQuestion.input) {
+            let newVariable = {
+                [this.currentQuestion.input.variable]: answerString
             }
-        } else {
-            this.emitter.emit('finished', this.answeredData)
-            this.conversationFinished = true
+            
+            let newVariables = Object.assign(this.variables, newVariable)
+
+            this.variables = newVariables
+
+            if (this.currentQuestion.next && typeof this.currentQuestion.next === 'string') {
+                if (this.options.autoNext) {
+                    const delay = this._calculateDelay()
+                    this.emitter.emit('delay', delay)
+    
+                    setTimeout(() => {
+                        this._findAndProcessDataObj(this.currentQuestion.next)
+                    }, delay)
+                } else {
+                    this.nextMessage = this.currentQuestion.next
+                }
+            } else {
+                this._finalData()
+                this.conversationFinished = true
+            }
+        } else if (this.currentQuestion.answers) {
+            this.currentQuestion.answers.forEach((answer) => {
+                if (answer.text === answerString) {
+                    if (answer.next && typeof answer.next === 'string') {
+                        if (this.options.autoNext) {
+                            const delay = this._calculateDelay()
+                            this.emitter.emit('delay', delay)
+            
+                            setTimeout(() => {
+                                this._findAndProcessDataObj(answer.next)
+                            }, delay)
+                        } else {
+                            this.nextMessage = answer.next
+                        }
+                    } else {
+                        this._finalData()
+                        this.conversationFinished = true
+                    }
+                }
+            })
         }
+    }
+
+    _finalData () {
+        let data = {
+            data: this.answeredData,
+            variables: this.variables
+        }
+
+        this.emitter.emit('finished', data)
+    }
+
+    _parseDataObj (dataObj) {
+        for (let key in this.variables) {
+            if (dataObj.text) {
+                dataObj.text = dataObj.text.replace('${' + key + '}', this.variables[key])
+            } else if (dataObj.question) {
+                dataObj.question = dataObj.question.replace('${' + key + '}', this.variables[key])
+            }
+        }
+        return dataObj
     }
 }
