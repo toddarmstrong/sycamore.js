@@ -198,6 +198,7 @@ sycamore.next(id)
 | speed | int | 5 | A value of 1 or above. 5 is an average typing speed. If number is below 1 then it will be ignored and default will be used.
 | delay | int | 0 | A millisecond value greater or equal to 0, which specifies the delay time after the answer() method is called before the next question is asked
 | delayMinMax | array | | An array of 2 numbers only to determine the range of randomised delay after each answer() (ex. [1500, 3000])
+| characterDependentWait | boolean | true | Set whether a wait is calculated on the length of the string
 | firstMessage | string | | Supply a question ID string to determine that is the first question
 | autoNext | boolean | true | Set whether the next message or question will be automatically sent
 
@@ -206,6 +207,7 @@ const options = {
 	speed: 5, // Determine the speed of the typing
 	delay: 1000, // Delay after question is answered before next is asked, millisecond >= 0
 	delayMinMax: [1500, 3000], // Array containing only 2 numbers, first index must be lower than second
+	characterDependentWait: true, // Sycamore will calculate the waiting time depending on the length of the string
 	firstMessage: 'age', // The first question can be set in the options or passed as the first parameter to the init method
 	autoNext: false // Sycamore will wait for the next() method to be called before advancing
 }
