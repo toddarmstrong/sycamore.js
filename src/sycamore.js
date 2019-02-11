@@ -30,6 +30,13 @@ export default class Sycamore {
             delayMinMax = false
         }
 
+        let characterDependentWait
+        if (options.characterDependentWait !== null && typeof options.characterDependentWait === 'boolean') {
+            characterDependentWait = options.characterDependentWait
+        } else {
+            characterDependentWait = true
+        }
+
         let firstMessage
         if (options.firstMessage && typeof options.firstMessage === 'string') {
             firstMessage = options.firstMessage
@@ -48,6 +55,7 @@ export default class Sycamore {
             speed: speed,
             delay: delay,
             delayMinMax: delayMinMax,
+            characterDependentWait: characterDependentWait,
             firstMessage: firstMessage,
             autoNext: autoNext
         }
@@ -115,11 +123,15 @@ export default class Sycamore {
     **/
 
     _calculateWait (question) {
-        const characterLength = question.length
-        let wait = characterLength / this.charactersPerSecond
-        wait = wait * 1000
-        wait = Math.round(wait)
-        return wait
+        if (this.options.characterDependentWait) {
+            const characterLength = question.length
+            let wait = characterLength / this.charactersPerSecond
+            wait = wait * 1000
+            wait = Math.round(wait)
+            return wait
+        } else {
+            return 0
+        }
     }
 
     _calculateDelay () {
